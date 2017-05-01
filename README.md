@@ -86,3 +86,40 @@ oliver.nadj@lazada.com | +84 1229880451 |  Skype: nosk83
 [//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
 
   [Ubuntu]: <https://www.digitalocean.com/community/tutorials/how-to-install-go-1-6-on-ubuntu-16-04>
+  
+  
+========
+## How to run
+
+1. Install go dependencies
+
+```sh
+go get github.com/gorilla/mux
+go install github.com/gorilla/mux
+
+go get github.com/urfave/negroni
+go install github.com/urfave/negroni
+```
+2. Install npm package
+  
+```sh
+npm install
+```
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli)
+
+3. Run project
+```sh
+npm run start
+```
+
+4. After browser open this link http://127.0.0.1:8080/, wait for the webpack build source code and refresh the page
+
+5. Enjoy
+
+```
+-- 
+Thanks & regards,
+Hung Thai
+
+hungth.it@gmail.com
+```

@@ -1,3 +1,89 @@
-<h1>
-  {{title}}
-</h1>
+<div fxLayout="row" fxLayoutAlign="space-between start">
+  <section fxFlex="70" class="services-container" #servicesContainerElem>
+    <div class="last-update">
+      <div><span [style.fontSize.px]="12">Last Update:</span> {{lastUpdate | date: 'dd MMM yyyy HH:mm:ss'}}</div>
+      <div><span [style.fontSize.px]="12">Update After:</span> {{updateAfter}} seconds</div>
+    </div>
+    <div #serviceItemElems *ngFor="let item of services; let i = index">
+      <md-card class="service-item" [style.transform]="getTransformStyling(i)"
+               [ngStyle]="{'margin-left.px': circleSize/2, 'margin-top.px': circleSize/2}">
+        <md-card-title class="service-item__title">
+          {{item.service}}
+        </md-card-title>
+        <md-card-content class="service-item__content">
+          <div class="cache">
+            <label>CACHE</label>
+            <md-icon [ngClass]="{'icon-true': item['cache_is_ok'], 'icon-false': !item['cache_is_ok'] }">
+              {{item['cache_is_ok'] ? 'check_circle' : 'error'}}
+            </md-icon>
+          </div>
+          <md-divider></md-divider>
+          <div class="db">
+            <label>DATABASE</label>
+            <md-icon [ngClass]="{'icon-true': item['db_is_ok'], 'icon-false': !item['db_is_ok'] }">
+              {{item['db_is_ok'] ? 'check_circle' : 'error'}}
+            </md-icon>
+          </div>
+          <md-divider></md-divider>
+          <div class="status">
+            <label>STATUS</label>
+            <span [ngClass]="{'status-ok': item.status === 'OK', 'status-error': item.status === 'Error'}">
+          {{item.status}}
+        </span>
+          </div>
+          <md-divider></md-divider>
+          <div class="struct-cache">
+            <label>STRUCT CACHE</label>
+            <md-icon [ngClass]="{'icon-true': item['struct_cache_is_ok'], 'icon-false': !item['struct_cache_is_ok'] }">
+              {{item['struct_cache_is_ok'] ? 'check_circle' : 'error'}}
+            </md-icon>
+          </div>
+        </md-card-content>
+        <md-card-footer class="service-item__footer">
+          <div class="version">version: {{item.version}}</div>
+        </md-card-footer>
+      </md-card>
+    </div>
+
+    <div>
+    </div>
+
+    <md-progress-bar mode="indeterminate"
+                     color="accent"
+                     #connectionElems class="connection-line mat-primary mat-progress-bar"
+                     *ngFor="let item of connections"
+                     [ngStyle]="{
+                        'top.px': item.top,
+                        'left.px': item.left,
+                        'width.px': item.width,
+                        'transform': item.rotate
+                      }"
+    ></md-progress-bar>
+
+  </section>
+
+  <section fxFlex="30">
+    <h3 class="title">Connections</h3>
+
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div fxFlex="33" class="connection-client" [style.textAlign]="'center'">
+        Client
+      </div>
+      <div fxFlex="33" class="connection-server" [style.textAlign]="'center'">
+        Server
+      </div>
+    </div>
+
+    <div *ngFor="let item of serviceMap" fxLayout="row" fxLayoutAlign="space-between center">
+      <div fxFlex="33" class="connection-client">{{item.client}}</div>
+      <div fxFlex class="indicator">
+        <md-progress-bar mode="indeterminate"
+                         color="accent" [style.height.px]="24">
+        </md-progress-bar>
+        <div class="number-of-request">{{item['requests-per-minutes'] | number}}</div>
+      </div>
+      <div fxFlex="33" class="connection-server">{{item.server}}</div>
+    </div>
+  </section>
+</div>
+

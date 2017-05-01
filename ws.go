@@ -12,6 +12,9 @@ import (
 	"math/rand"
 	"encoding/json"
 	"github.com/gorilla/websocket"
+  "github.com/gorilla/mux"
+  "github.com/urfave/negroni"
+  "path/filepath"
 )
 
 type msg struct {
@@ -49,9 +52,23 @@ func main() {
 	}
 	httpAddr = host + ":" + port
 
-	http.HandleFunc("/ws", wsHandler)
-	fs := http.FileServer(http.Dir("static"))
-	http.Handle("/", fs)
+  r := mux.NewRouter()
+
+  n := negroni.Classic()
+  n.UseHandler(r)
+
+  abspath, err := filepath.Abs("dist")
+
+  if err != nil {
+    fmt.Print(err)
+  }
+
+  fs := http.Dir(abspath)
+
+  r.HandleFunc("/ws", wsHandler)
+  r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+  r.PathPrefix("/").Handler(http.FileServer(fs))
+
 	go func() {
 		url := "http://" + httpAddr
 		if waitServer(url) && *openBrowser && startBrowser(url) {
@@ -60,7 +77,7 @@ func main() {
 			fmt.Printf("Please open your web browser and visit %v\n", url)
 		}
 	}()
-	panic(http.ListenAndServe(":8080", nil))
+	panic(http.ListenAndServe(":8080", n))
 }
 
 func wsHandler(w http.ResponseWriter, r *http.Request) {
@@ -76,7 +93,7 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func echo(conn *websocket.Conn) {
-	for i := 1; true; i++ {
+  for i := 1; true; i++ {
 		rand.Seed(int64(i))
 		index := rand.Intn(6)
 		file, err := ioutil.ReadFile(fmt.Sprintf("./static/services.%d.json", index))
